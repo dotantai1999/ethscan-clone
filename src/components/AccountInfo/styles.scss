@@ -1,0 +1,70 @@
+.dashboard{
+    display: flex;
+    justify-content: space-between;
+    
+}
+.address {
+    width: 506px;
+    height: 162px;
+    background-color: #7070e3;
+    border-radius: 10px;
+    display: flex;
+    // justify-content: center;
+    align-items: center;
+}
+
+.address-info {
+    margin-left: 20px;
+    color: #fff;
+}
+
+.balance {
+    width: 506px;
+    height: 162px;
+    background-color: #5A78F0;
+    border-radius: 10px;
+    display: flex;
+    // justify-content: center;
+    align-items: center;
+}
+
+.explorer {
+    width: 506px;
+    height: 162px;
+    background-color: #25B0E8;
+    border-radius: 10px;
+    display: flex;
+    // justify-content: center;
+    align-items: center;
+    color: #fff;
+}
+
+.title {
+    margin: 0;
+}
+
+.balance-info{
+    margin-left: 20px;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+}
+.form-transaction{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+   align-items: center;
+   background-color: #E3D9D9;
+    
+}
+.amount, .to-address{
+    margin:8px 0;
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    font-weight: 500;
+}
+
+.transaction-title{
+    font-size: 30px;
+}
