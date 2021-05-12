@@ -1,8 +1,10 @@
-import React from "react";
-import PropTypes from "prop-types";
+import React, { useEffect } from "react";
 import "./styles.scss";
 import { Grid, makeStyles, Paper } from "@material-ui/core";
-import AssessmentIcon from "@material-ui/icons/Assessment";
+import socketIOClient from "socket.io-client";
+import blockchainApi from "../../api/blockchainApi";
+import { useState } from "react";
+import DayJS from "react-dayjs";
 
 const useStyles = makeStyles((theme) => ({
   explorer_root: {
@@ -13,7 +15,7 @@ const useStyles = makeStyles((theme) => ({
     margin: "20px 5px",
     height: "80px",
     display: "flex",
-    justifyContent: "space-between",
+    justifyContent: "center",
   },
   lastest_block: {
     display: "flex",
@@ -37,6 +39,30 @@ Explorer.propTypes = {};
 
 function Explorer(props) {
   const classes = useStyles();
+  const [chain, setChain] = useState([]);
+  const [pendingTransactions, setPendingTransactions] = useState([]);
+  const [transactions, setTransactions] = useState([]);
+  useEffect(() => {
+    const socket = socketIOClient("http://localhost:4000");
+    socket.on("PT", (data) => {
+      console.log(data);
+    });
+    return () => socket.disconnect();
+  }, []);
+
+  useEffect(() => {
+    const fetchBlockChain = async () => {
+      const result = await blockchainApi.getBlockChain();
+      const { chain, pendingTransactions, transactions } = result.data;
+      console.log(result.data);
+      setChain(chain);
+      setPendingTransactions(pendingTransactions);
+      setTransactions(transactions);
+    };
+
+    fetchBlockChain();
+  }, []);
+
   return (
     <div className={classes.explorer_root}>
       <div className="transactions">
@@ -44,239 +70,96 @@ function Explorer(props) {
           <Grid container spacing={3}>
             <Grid item xs={12}>
               <Paper className={classes.paper}>
-                <div className="transaction-left">
-                  <AssessmentIcon
-                    classes={classes.icon}
-                    viewBox="0 0 24 24"
-                  ></AssessmentIcon>
-                  <span className="transaction_title">TRANSACION</span>
-                  <div className="transaction_price">
-                    <span className="transaction_price-first">1,124.71 M</span>
-                    <span className="transactoin_price-second">(18.6 TPS)</span>
-                  </div>
-                </div>
-                <div className="transaction_right">
-                  <span className="transaction_title">MED GAS PRICE</span>
-                  <div className="transaction_price">
-                    <span className="transaction_price-first">121 GWEI</span>
-                    <span className="transaction_price-second">($10,37)</span>
-                  </div>
-                </div>
+                <span className="transaction_title">TRANSACION: </span>
+                <span className="transaction_price">{transactions.length}</span>
               </Paper>
             </Grid>
 
             <Grid item xs={12} sm={6}>
               <span className="latest_block-first-title">Lastest Blocks</span>
-              <Paper className={classes.lastest_block}>
-                <div className="lastest_block-first">
-                  <span className="lastest_block-first-icon">BK</span>
-                  <div className="lastest_block-first-content">
-                    <span className="lastest_block-first-content-info">
-                      1240943
-                    </span>
-                    <span className="lastest_block-first-content-time">
-                      21 secs ago
-                    </span>
-                  </div>
-                </div>
-                <div className="lastest_block-second">
-                  <div className="lastest_block-second-content">
-                    <div className="lastest_block-second-content-top">
-                      <span className="lastest_block-second-content-info">
-                        Miner
-                      </span>
-                      <a href="">Spark pool</a>
+              {chain.map((block, index) => {
+                return (
+                  <Paper key={index} className={classes.lastest_block}>
+                    <div className="lastest_block-first">
+                      <span className="lastest_block-first-icon">BK</span>
+                      <div className="lastest_block-first-content">
+                        <span className="lastest_block-first-content-info">
+                          {block.index}
+                        </span>
+                        <DayJS format="DD-MM-YYYY">{block.date}</DayJS>
+                      </div>
                     </div>
+                    <div className="lastest_block-second">
+                      <div className="lastest_block-second-content">
+                        <div className="lastest_block-second-content-top">
+                          <span className="lastest_block-second-content-info">
+                            Miner
+                          </span>
+                          <a href="">Spark pool</a>
+                        </div>
 
-                    <div className="lastest_block-second-content-bottom">
-                      <a href="">294txns</a>
-                      <span className="lastest_block-second-content-time">
-                        21 secs ago
+                        <div className="lastest_block-second-content-bottom">
+                          <a href="">{`${block.transactions.length}txns`}</a>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="lastest_block-third">
+                      <span className="lastest_block-third-price">
+                        {`${
+                          block.transactions.reduce((total, transaction) => {
+                            return total + transaction.amount;
+                          }, 0) - 10
+                        } Eth`}
                       </span>
                     </div>
-                  </div>
-                </div>
-                <div className="lastest_block-third">
-                  <span className="lastest_block-third-price">4.23224 Eth</span>
-                </div>
-              </Paper>
-              <Paper className={classes.lastest_block}>
-                <div className="lastest_block-first">
-                  <span className="lastest_block-first-icon">BK</span>
-                  <div className="lastest_block-first-content">
-                    <span className="lastest_block-first-content-info">
-                      1240943
-                    </span>
-                    <span className="lastest_block-first-content-time">
-                      21 secs ago
-                    </span>
-                  </div>
-                </div>
-                <div className="lastest_block-second">
-                  <div className="lastest_block-second-content">
-                    <div className="lastest_block-second-content-top">
-                      <span className="lastest_block-second-content-info">
-                        Miner
-                      </span>
-                      <a href="">Spark pool</a>
-                    </div>
-
-                    <div className="lastest_block-second-content-bottom">
-                      <a href="">294txns</a>
-                      <span className="lastest_block-second-content-time">
-                        21 secs ago
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="lastest_block-third">
-                  <span className="lastest_block-third-price">4.23224 Eth</span>
-                </div>
-              </Paper>
-              <Paper className={classes.lastest_block}>
-                <div className="lastest_block-first">
-                  <span className="lastest_block-first-icon">BK</span>
-                  <div className="lastest_block-first-content">
-                    <span className="lastest_block-first-content-info">
-                      1240943
-                    </span>
-                    <span className="lastest_block-first-content-time">
-                      21 secs ago
-                    </span>
-                  </div>
-                </div>
-                <div className="lastest_block-second">
-                  <div className="lastest_block-second-content">
-                    <div className="lastest_block-second-content-top">
-                      <span className="lastest_block-second-content-info">
-                        Miner
-                      </span>
-                      <a href="">Spark pool</a>
-                    </div>
-
-                    <div className="lastest_block-second-content-bottom">
-                      <a href="">294txns</a>
-                      <span className="lastest_block-second-content-time">
-                        21 secs ago
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="lastest_block-third">
-                  <span className="lastest_block-third-price">4.23224 Eth</span>
-                </div>
-              </Paper>
+                  </Paper>
+                );
+              })}
             </Grid>
 
             <Grid item xs={12} sm={6}>
               <span className="latest_transaction-title">
                 Lastest Transaction
               </span>
-              <Paper className={classes.lastest_transaction}>
-                <div className="latest-transaction-first">
-                  <span className="latest-transaction-first-icon">TX</span>
-                  <div className="latest-transaction-first-content">
-                    <span className="latest-transaction-first-content-info">
-                      1240943
-                    </span>
-                    <span className="latest-transaction-first-content-time">
-                      21 secs ago
-                    </span>
-                  </div>
-                </div>
-                <div className="latest-transaction-second">
-                  <div className="latest-transaction-second-content">
-                    <div className="latest-transaction-second-content-top">
-                      <span className="latest-transaction-second-content-info">
-                        Miner
-                      </span>
-                      <a href="">Spark pool</a>
+              {transactions.map((transaction, index) => {
+                return (
+                  <Paper key={index} className={classes.lastest_transaction}>
+                    <div className="latest-transaction-first">
+                      <span className="latest-transaction-first-icon">TX</span>
+                      <div className="latest-transaction-first-content">
+                        <span className="latest-transaction-first-content-info">
+                          {transaction.transactionId}
+                        </span>
+                        <DayJS format="DD-MM-YYYY">{transaction.date}</DayJS>
+                      </div>
                     </div>
+                    <div className="latest-transaction-second">
+                      <div className="latest-transaction-second-content">
+                        <div className="latest-transaction-second-content-top">
+                          <span className="latest-transaction-second-content-info">
+                            From
+                          </span>
+                          <a href="">{transaction.sender}</a>
+                        </div>
 
-                    <div className="latest-transaction-second-content-bottom">
-                      <a href="">294txns</a>
-                      <span className="latest-transaction-second-content-time">
-                        21 secs ago
+                        <div className="latest-transaction-second-content-bottom">
+                          <span className="latest-transaction-second-content-info">
+                            To
+                          </span>
+                          <a href="">{transaction.recipient}</a>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="latest-transaction-third">
+                      <span className="latest-transaction-third-price">
+                        {`${transactions.reduce((total, transaction) => {
+                          return total + transaction.amount;
+                        }, 0)} Eth`}
                       </span>
                     </div>
-                  </div>
-                </div>
-                <div className="latest-transaction-third">
-                  <span className="latest-transaction-third-price">
-                    4.23224 Eth
-                  </span>
-                </div>
-              </Paper>
-              <Paper className={classes.lastest_transaction}>
-                <div className="latest-transaction-first">
-                  <span className="latest-transaction-first-icon">TX</span>
-                  <div className="latest-transaction-first-content">
-                    <span className="latest-transaction-first-content-info">
-                      1240943
-                    </span>
-                    <span className="latest-transaction-first-content-time">
-                      21 secs ago
-                    </span>
-                  </div>
-                </div>
-                <div className="latest-transaction-second">
-                  <div className="latest-transaction-second-content">
-                    <div className="latest-transaction-second-content-top">
-                      <span className="latest-transaction-second-content-info">
-                        Miner
-                      </span>
-                      <a href="">Spark pool</a>
-                    </div>
-
-                    <div className="latest-transaction-second-content-bottom">
-                      <a href="">294txns</a>
-                      <span className="latest-transaction-second-content-time">
-                        21 secs ago
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="latest-transaction-third">
-                  <span className="latest-transaction-third-price">
-                    4.23224 Eth
-                  </span>
-                </div>
-              </Paper>
-              <Paper className={classes.lastest_transaction}>
-                <div className="latest-transaction-first">
-                  <span className="latest-transaction-first-icon">TX</span>
-                  <div className="latest-transaction-first-content">
-                    <span className="latest-transaction-first-content-info">
-                      1240943
-                    </span>
-                    <span className="latest-transaction-first-content-time">
-                      21 secs ago
-                    </span>
-                  </div>
-                </div>
-                <div className="latest-transaction-second">
-                  <div className="latest-transaction-second-content">
-                    <div className="latest-transaction-second-content-top">
-                      <span className="latest-transaction-second-content-info">
-                        Miner
-                      </span>
-                      <a href="">Spark pool</a>
-                    </div>
-
-                    <div className="latest-transaction-second-content-bottom">
-                      <a href="">294txns</a>
-                      <span className="latest-transaction-second-content-time">
-                        21 secs ago
-                      </span>
-                    </div>
-                  </div>
-                </div>
-                <div className="latest-transaction-third">
-                  <span className="latest-transaction-third-price">
-                    4.23224 Eth
-                  </span>
-                </div>
-              </Paper>
+                  </Paper>
+                );
+              })}
             </Grid>
           </Grid>
         </div>

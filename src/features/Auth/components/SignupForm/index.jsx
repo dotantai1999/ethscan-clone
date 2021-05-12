@@ -7,7 +7,7 @@ import TextField from "@material-ui/core/TextField";
 import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
-import signupApi from "./../../api/signupApi";
+import authApi from "./../../../../api/authApi";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -34,16 +34,17 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-Signup.propTypes = {};
+SignupForm.propTypes = {};
 
-function Signup(props) {
+function SignupForm(props) {
   const classes = useStyles();
 
   const [wordList, setWordList] = useState([]);
   useEffect(() => {
     const fetchSignUpWords = async () => {
-      const wordArray = await signupApi.signup();
+      const wordArray = await authApi.signup();
       setWordList(wordArray.data.mnemonic.split(" "));
+      console.log(wordArray.data.mnemonic.split(" "));
     };
     fetchSignUpWords();
   }, []);
@@ -80,4 +81,4 @@ function Signup(props) {
   );
 }
 
-export default Signup;
+export default SignupForm;

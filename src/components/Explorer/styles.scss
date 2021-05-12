@@ -45,6 +45,7 @@
     font-weight: 600;
     color: #4a4f55;
     margin-bottom: 10px;
+    text-align: center;
 }
 .latest_transaction-title{
     display: block;
@@ -52,6 +53,7 @@
     font-weight: 600;
     color: #4a4f55;
     margin-bottom: 10px;
+    text-align: center;
 }
 
 .lastest_block-first-content,.latest-transaction-first-content{
@@ -68,6 +70,8 @@
     border-radius: 3px;
     margin:0 8px;
 }
+
+
 .lastest_block-first-content-info,.latest-transaction-first-content-info{
     color: #3498db;
 }
@@ -89,11 +93,24 @@
 
 }
 
+.latest-transaction-second-content-bottom {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
 .lastest_block-second-content-bottom a,.latest-transaction-second-content-bottom a{
     text-decoration: none;
     color: #3498db;
-    display: inline-block;
+    
     margin-right: 3px;
+    width: 120px;
+    display: block;
+    display: -webkit-box;
+    overflow: hidden;
+    height: 23px;
+    line-height: 23px;
+    -webkit-line-clamp: 1;
+    -webkit-box-orient: vertical;
 }
 
 .lastest_block-second-content-time,.latest-transaction-second-content-time{
