@@ -5,6 +5,7 @@ import socketIOClient from "socket.io-client";
 import blockchainApi from "../../api/blockchainApi";
 import { useState } from "react";
 import DayJS from "react-dayjs";
+import Button from "@material-ui/core/Button";
 
 const useStyles = makeStyles((theme) => ({
   explorer_root: {
@@ -45,6 +46,7 @@ function Explorer(props) {
   useEffect(() => {
     const socket = socketIOClient("http://localhost:4000");
     socket.on("PT", (data) => {
+      setPendingTransactions(data);
       console.log(data);
     });
     return () => socket.disconnect();
@@ -54,10 +56,11 @@ function Explorer(props) {
     const fetchBlockChain = async () => {
       const result = await blockchainApi.getBlockChain();
       const { chain, pendingTransactions, transactions } = result.data;
-      console.log(result.data);
       setChain(chain);
       setPendingTransactions(pendingTransactions);
       setTransactions(transactions);
+      console.log(pendingTransactions);
+      console.log("hahaha");
     };
 
     fetchBlockChain();
@@ -157,6 +160,62 @@ function Explorer(props) {
                         }, 0)} Eth`}
                       </span>
                     </div>
+                  </Paper>
+                );
+              })}
+            </Grid>
+            <Grid item xs={12}>
+              <span className="latest_transaction-title">
+                Pending Transaction
+              </span>
+              {pendingTransactions.map((transaction, index) => {
+                return (
+                  <Paper key={index} className={classes.lastest_transaction}>
+                    <div className="latest-transaction-first">
+                      <span className="latest-transaction-first-icon">TX</span>
+                      <div className="latest-transaction-first-content">
+                        <span className="latest-transaction-first-content-info">
+                          {transaction.transactionId}
+                        </span>
+                        <DayJS format="DD-MM-YYYY">{transaction.date}</DayJS>
+                      </div>
+                    </div>
+                    <div className="latest-transaction-second">
+                      <div className="latest-transaction-second-content">
+                        <div className="latest-transaction-second-content-top">
+                          <span className="latest-transaction-second-content-info">
+                            From
+                          </span>
+                          <a href="">{transaction.sender}</a>
+                        </div>
+
+                        <div className="latest-transaction-second-content-bottom">
+                          <span className="latest-transaction-second-content-info">
+                            To
+                          </span>
+                          <a
+                            style={{ display: "block", width: "600px" }}
+                            href=""
+                          >
+                            {transaction.recipient}
+                          </a>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="latest-transaction-third">
+                      <span className="latest-transaction-third-price">
+                        {`${pendingTransactions.reduce((total, transaction) => {
+                          return total + transaction.amount;
+                        }, 0)} Eth`}
+                      </span>
+                    </div>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      href="#contained-buttons"
+                    >
+                      Mine
+                    </Button>
                   </Paper>
                 );
               })}
