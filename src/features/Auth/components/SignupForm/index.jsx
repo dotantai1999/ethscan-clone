@@ -8,6 +8,7 @@ import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import Button from "@material-ui/core/Button";
 import authApi from "./../../../../api/authApi";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   title: {
@@ -31,6 +32,7 @@ const useStyles = makeStyles((theme) => ({
     width: "365px",
     height: "65px",
     color: "#fff",
+    textDecoration: "none",
   },
 }));
 
@@ -74,9 +76,11 @@ function SignupForm(props) {
           })}
         </Grid>
       </form>
-      <Button className={classes.button} variant="contained" color="primary">
-        Primary
-      </Button>
+      <Link style={{ textDecoration: "none" }} to="/login">
+        <Button className={classes.button} variant="contained" color="primary">
+          Primary
+        </Button>
+      </Link>
     </div>
   );
 }

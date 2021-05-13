@@ -11,6 +11,7 @@ import { useEffect } from "react";
 import transactionApi from "../../../../api/transactionApi";
 import { useForm } from "react-hook-form";
 import { ToastContainer, toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root_account_info: {
@@ -115,14 +116,16 @@ function AccountInfoPage(props) {
             </div>
           </div>
         </div>
-        <div className="explorer">
+        <Link style={{ textDecoration: "none" }} to="/explored">
           <div className="explorer">
-            <ChangeHistoryOutlinedIcon
-              className={classes.explorer_icon}
-            ></ChangeHistoryOutlinedIcon>
-            <h6 className="title">Explorer</h6>
+            <div className="explorer">
+              <ChangeHistoryOutlinedIcon
+                className={classes.explorer_icon}
+              ></ChangeHistoryOutlinedIcon>
+              <h6 className="title">Explorer</h6>
+            </div>
           </div>
-        </div>
+        </Link>
       </div>
       <form
         className="form-transaction"
